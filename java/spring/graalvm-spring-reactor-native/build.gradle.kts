@@ -9,7 +9,8 @@ group = "com.techyplanet"
 version = "0.0.1-SNAPSHOT"
 
 java {
-	sourceCompatibility = JavaVersion.VERSION_21
+	sourceCompatibility = JavaVersion.VERSION_17
+	// Changed from 21 to 17 for JRE docker images
 }
 
 repositories {
@@ -24,4 +25,14 @@ dependencies {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+
+graalvmNative {
+	binaries {
+		val main by getting {
+			//Reference Mostly Static Images - https://www.graalvm.org/22.0/reference-manual/native-image/StaticImages/
+			buildArgs("-H:+StaticExecutableWithDynamicLibC")
+		}
+	}
 }
