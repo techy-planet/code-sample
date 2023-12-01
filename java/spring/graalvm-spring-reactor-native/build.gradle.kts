@@ -1,3 +1,5 @@
+import org.apache.tools.ant.taskdefs.condition.Os
+
 plugins {
 	java
 	id("org.springframework.boot") version "3.1.5"
@@ -26,12 +28,18 @@ tasks.withType<Test> {
 	useJUnitPlatform()
 }
 
-
 graalvmNative {
 	binaries {
 		val main by getting {
 			//Reference Mostly Static Images - https://www.graalvm.org/22.0/reference-manual/native-image/StaticImages/
-			buildArgs("-H:+StaticExecutableWithDynamicLibC")
+			if(! (Os.isFamily(Os.FAMILY_WINDOWS) || Os.isFamily(Os.FAMILY_MAC))) {
+				println("Native Static Build -> OS Compatibility passed")
+				buildArgs("-H:+StaticExecutableWithDynamicLibC")
+			} else {
+				println("++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+				println("Native Static Build -> IGNORED as OS is not UNIX")
+				println("++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+			}
 		}
 	}
 }
